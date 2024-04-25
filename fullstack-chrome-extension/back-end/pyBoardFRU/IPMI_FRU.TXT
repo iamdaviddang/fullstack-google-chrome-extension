@@ -1,0 +1,134 @@
+                         IPMI FRU Structure Tool
+ 
+                           IPMI_FRU(32).EXE
+
+                            Documentation
+             
+             
+             
+             
+1. Introduction
+===============
+
+    The set of IPMI (Intelligent Platform Management Interface) specifications
+    contain the document
+    
+        Platform Management FRU Information Storage Definition
+        
+    (FRU = Field Replaceable Unit). This specification defines a structure to
+    hold detailed information of any replaceable hardware unit.
+
+    Typically this structure is stored in a I2C serial EEPROM.
+    
+    The FRU structure is a data block which contains the information itself
+    as well as checksums, length fields and offset pointers. 
+    Therefore it is difficult to create or analyse the structure by hand.
+    
+    The tool IPMI_FRU(32).EXE provides the following functions to handle 
+    FRU structures:
+    
+      1) Convert a text file containing the "pure" informations into a binary
+         file containing the full FRU structure.
+         
+      2) Convert a binary file containing the full FRU structure into a text
+         file containing the "pure" informations.
+         
+      3) Modify FRU structured data in a binary file by specifying the desired 
+         changes in a text file
+
+
+2. Functions of IPMI_FRU
+========================
+
+    The tool IPMI_FRU.EXE runs under DOS as well as in a Windows Command Window.
+    The tool IPMI_FRU32.EXE is a pure Windows application.
+    
+    The following command line parameters start the function described
+    above in 1.1)-3):
+    
+      IPMI_FRU(32)  -INI2BIN=<Filename>  [-BINSIZE=<Size>]  [-BACKGR=<Val>]
+
+        Reads the text file <Filename>.INI, creates the IPMI-FRU structure
+        from it and writes it to the binary file <Filename>.BIN
+        <Size> sets the total size of <Filename>.BIN (default: 256).
+        The unused bytes in <Filename>.BIN are set to <Val> (default: 0x00).
+        
+      IPMI_FRU(32)  -BIN2INI=<Filename>  [-IGNCHKSUM]
+
+        Reads the binary file <Filename>.BIN, analyses it as an IPMI-FRU
+        structure and produces the text file <Filename>.INI
+      
+      IPMI_FRU  -VIEWBIN=<Filename>  [-IGNCHKSUM]
+
+        Reads the binary file <Filename>.BIN, analyses it as an IPMI-FRU
+        structure and offers a dialog to explore its contents
+
+      IPMI_FRU(32)  -PTCHBIN=<Filename>  [-IGNCHKSUM]
+
+        Reads the binary file <Filename>.BIN, analyses it as an IPMI-FRU
+        structure and changes all entries given by <Filename>.INI and
+        writes back the patched binary file <Filename>.BIN
+
+        -IGNCHKSUM ignores checksum errors when analysing the IPMI-FRU structure.
+
+    (This description is also shown by starting "IPMI_FRU(32).EXE ?")
+    
+    
+3. Syntax of the Text / INI File
+================================    
+
+    The meaning of the different "areas" and the field names below are 
+    described in the "Platform Management FRU Information Storage Definition"
+    mentioned in 1.
+    
+    All supported keywords of the text / INI file are listed below.
+    (The ";" starts a comment and the text right of it has no function)
+    
+        ; InternalUseArea                                                                                                
+            InternalUseArea=                       ; InternalUseArea=<Byte0>,<Byte1>,...                                 
+            InternalUseAreaStr=                    ; InternalUseAreaStr=<FormatVersion>,"String"                         
+                                                                                                                         
+        ; ChassisInfoArea                                                                                                
+            ChassisType=                           ; 0-255: Enumeration                                                  
+            ChassisPartNumber=                                                                                           
+            ChassisSerialNumber=                                                                                         
+            ChassisCustomInfoField0=                                                                                     
+            ; ...                                                                                                        
+            ChassisCustomInfoField12=                                                                                    
+                                                                                                                         
+        ; BoardInfoArea                                                                                                  
+            ManufacturingDateTime=                 ; May only be 'T' or 'B,..' with 3 bytes                              
+            BoardManufacturer=                                                                                           
+            BoardProductName=                                                                                            
+            BoardSerialNumber=                                                                                           
+            BoardPartNumber=                                                                                             
+            BoardFRUFileId=                                                                                              
+            BoardCustomInfoField0=                                                                                       
+            ; ...                                                                                                        
+            BoardCustomInfoField9=                                                                                       
+                                                                                                                         
+        ; ProductInfoArea                                                                                                
+            ManufacturerName=                                                                                            
+            ProductName=                                                                                                 
+            ProductPartModelNumber=                                                                                      
+            ProductVersion=                                                                                              
+            ProductSerialNumber=                                                                                         
+            AssetTag=                                                                                                    
+            ProductFRUFileId=                                                                                            
+            ProductCustomInfoField0=                                                                                     
+            ; ...                                                                                                        
+            ProductCustomInfoField7=                                                                                     
+                                                                                                                         
+        ; RecordArea                                                                                                     
+            Record1=                               ; (Add/Set)Recordx=<RecordTypeID>,<Byte0>,<Byte1>,...[,"String"]                          
+            ; ...                                                                                                        
+            Record12=                                                                                                    
+
+            AddRecord=                             ; Add the record after the last already existing record
+            SetRecord=                             ; Changes the first of the already existing records with the same
+                                                   ; <RecordTypeID>
+                                                                                                                         
+        ; Syntax of all parameters (except InternalUseArea(Str), ChassisType and (Add/Set)Recordx):
+        ;   Xxxx=B,0x10,0x20,12,0x40       Binary with length of 4 byte                                                  
+        ;   Xxxx=S,"Hello"                 8-bit ASCII String with length of 5 byte                                      
+        ;   Xxxx=T                         Sets to binary with length of 3 and fill with current 3 byte dateTime         

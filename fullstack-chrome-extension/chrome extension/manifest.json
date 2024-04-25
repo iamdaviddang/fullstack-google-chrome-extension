@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "IRMC-IP finder + FRU-updater Extension",
+  "version": "1.0",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "/icons/icon16.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.172.25.32.4/monitor/*","*://*.172.25.32.4/dev/monitor/*"],
+      "js": ["Locked-position.js", "FRU-content.js", "ip-finder.js"]
+    }
+  ]
+}

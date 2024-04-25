@@ -1,0 +1,99 @@
+IPMIVIEW64.exe -host=10.172.138.24 -ini=RFRU.INI -usr=admin -pwd=Password@123 -host=xxx.xxx.xxx.xxx
+IPMI_FRU64.exe -bin2ini=idp.bin
+IPMI_FRU64.exe -ini2bin=idp.ini
+IPMIVIEW64.exe -host=10.172.138.24 -ini=WRFRU.INI -usr=admin -pwd=Password@123  -host=xxx.xxx.xxx.xxx
+
+edit WRFRU / RFRU.ini files:
+- 0x17 chassis FRU
+- 0x07 MB FRU
+
+
+
+IPMIVIEW(32/64)  [<LANAccess>]  <Operation>  [<Options>]
+
+LANAccess: [Windows/Linux only]
+
+ -HOST=<HostAddress>   Selects the BMC IP address or host name to connect with
+                       (if missing, local BMC is accessed)
+
+ -USR=<Username>       Selects the username for the connection
+                       (optional, default=admin)
+
+ -PWD=<Password>       Selects the password for the connection
+                       (optional, default=admin)
+
+ -PRVL=<PrivilegeLevl> Selects the desired privilege level number
+                       (optional, default=4)
+
+Operation:
+
+ -SCD                  Writes BMC specific info to the text file ipmiview.scd
+
+ -SCDS                 As -SCD, but additionally adds sensor information
+
+ -IDP0 / -IDP1 / -IDP2 Writes the binary contents of all FRU IdProms to the
+                       files IDPIeeii.BIN ee/ii=EntityID/Instance (both hex)
+
+ -PNI                  Reads Platform Network Inventory and outputs info to console
+
+ -SENSORINFO           Outputs information, status and current values of
+                       all sensors
+
+ -SEL                  Outputs System Event Log (SEL) entries
+
+ -CLEARSEL             Clears System Event Log (SEL)
+
+ -IEL                  Reads and outputs the Internal Event Log
+
+ -SDRR                 Outputs the Sensor Data Record Repositiory (SDRR)
+
+ -INI[=<File>]         Starts unattended test execution controlled by the given
+                       file or ipmiview.ini, if no <File> is given
+
+ -EXEC=<NetFnLUN>,<Cmd>,<Data1>,..,<Data256> Directly executes an IPMI command
+
+ -EXECX=<CtrlAddr>,<NetFnLUN>,<Cmd>,<Data1>,..,<Data32>
+
+ -TFTPFLASH=<UpdateServer>,<UpdateFile>,<FlashSelect>
+
+ -FANINFO              Outputs FTS-BMC specific fan information
+
+ -MEMINFO[X]           Outputs FTS-BMC specific memory module information
+                       (MEMINFOX additionally outputs SPD information)
+
+ -CSSINFO              Outputs FTS-BMC specific component status signal infos
+
+ -CHANNELINFO          Outputs a list the BMC interface channels
+
+ -USERINFO             Outputs information of all BMC users
+
+ -CPUINFO              Outputs FTS-BMC specific CPU information
+
+ -PCIINFO              Outputs FTS-BMC specific PCI device information
+
+ -CLI=<command>        Executes a FTS-BMC specific internal firmware command (use '_' as ' ')
+
+ -MEM=<Address>        Reads FTS-BMC internal memory at the given address
+
+ -PMBusFWUpd[F]        Executes PMBus controller firmware update ([F]orce) for PSU Gen2 [Windows/Linux only]
+
+ -PMBusFWUpdWO[F]      Executes PMBus controller firmware update ([F]orce) for PSU Gen3 [Windows/Linux only]
+
+ -XML                  Write informations to IPMIVIEW.xml [Windows/Linux only]
+
+ -ENUMCFG              Enumerate all ConfigSpace variables
+
+ -DENUMCFG             Enumerates the information in the ConfigSpace definition file along with all ConfigSpace variables [Windows/Linux only]
+
+ -LOGD                 Read internal log
+
+Options:
+
+ -INISECTION=<Section> Selects a specific [<Section>] in the above control file
+                       (optional, default=none=pre-section-area)
+
+ -BMC=<Addr>           Select BMC Address (optional, default=autodetect)
+
+ -IMB                  Enforce use of IMB interface
+
+ -DEBUG                Allows detailed trace of IPMI interface communication

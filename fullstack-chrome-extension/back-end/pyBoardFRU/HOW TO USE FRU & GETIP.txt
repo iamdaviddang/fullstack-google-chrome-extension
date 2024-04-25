@@ -1,0 +1,10 @@
+### How to rewrite fru ###
+
+1. please make sure that all needed python libs are installed - please run this command: "pip install -r requirements.txt"
+2. to rewrite FRU please use command: "python fru.py USN"
+3. connect to the iRMC and check if MB SN has been written correctly
+
+
+### how to get iRMC IP ###
+1. please make sure that all needed python libs are installed - please run this command: "pip install -r requirements.txt"
+2. use command: "python getIP.py USN"
