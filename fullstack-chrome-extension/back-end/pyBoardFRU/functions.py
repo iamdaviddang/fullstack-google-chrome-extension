@@ -8,6 +8,7 @@ import logging
 import time
 import pyperclip
 
+
 logging.basicConfig(filename='LOGs/LOG-FRU-rewrite.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 

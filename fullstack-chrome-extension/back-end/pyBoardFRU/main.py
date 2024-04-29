@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from functions import *
 from markupsafe import escape
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -116,7 +117,7 @@ def ipfinder(usn):
     if sfcs_data:
         if unit_irmc_ip:
             logging.info(f"for USN: {usn} is iRMC-IP:{unit_irmc_ip}")
-            return {"iRMC-IP":unit_irmc_ip}
+            return {"iRMCIP":unit_irmc_ip}
         else:
             logging.error("message - No IP found for the given MAC address.")
             return {"message":"No IP found for the given MAC address."}
@@ -124,7 +125,48 @@ def ipfinder(usn):
         logging.error("message - Failed to load data for USN")
         return {"message":"Failed to load data for USN"}
 
+@app.route("/api/upload-tasks/", methods=['GET'])
+def uploadTasks():
+    # Načtení JSON souboru
+    with open('data.json') as f:
+        data = json.load(f)
+
+    # Vytvoření JSON objektu s daty
+    response_data = {}
+    for name, info in data.items():
+        response_data[name] = {
+            "USN": info["USN"],
+            "position": info["position"],
+        }
+
+    return jsonify(response_data)
+
+
+@app.route("/api/receive-data/", methods=['POST'])
+def updateTasks():
+    # Načtení JSON souboru
+    with open('data.json') as f:
+        data = json.load(f)
+
+    # Získání dat z formuláře JSON
+    name = request.json['name']
+    usn = request.json['usn']
+    position = request.json['position']
+
+    # Aktualizace záznamu v JSON souboru
+    if name in data:
+        data[name]['USN'] = usn
+        data[name]['position'] = position
+
+        # Uložení aktualizovaných dat do JSON souboru
+        with open('data.json', 'w') as f:
+            json.dump(data, f, indent=4)
+
+        return jsonify({'message': f"Data pro {name} byla aktualizována."})
+    else:
+        return jsonify({'error': f"Student s jménem {name} nebyl nalezen."})
+
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=8080)
+    app.run(debug=True, host='0.0.0.0', port=8080)
